@@ -1,0 +1,86 @@
+MANUAL TEST CASES - Room Booking
+=================================
+
+Test Environment: https://automationintesting.online/
+Tested on: Chrome, February 2026
+
+
+TC_001: Book room with valid data
+----------------------------------
+Steps:
+1. Open https://automationintesting.online/
+2. Click "Book now" on Double room
+3. Select dates: 18-19 February 2026
+4. Fill in form:
+   - Firstname: John
+   - Lastname: Smith
+   - Email: john.smith@test.com
+   - Phone: +380501234567
+5. Click "Reserve Now"
+
+Expected: Booking confirmed, shows dates 2026-02-18 to 2026-02-19
+Actual: Works as expected ✓
+
+Type: Positive test
+
+
+TC_002: Invalid email format
+-----------------------------
+Steps:
+1. Open booking form for Double room
+2. Select dates: 18-19 February 2026
+3. Fill in form but use invalid email: john.smithtest.com (no @ symbol)
+4. Click "Reserve Now"
+
+Expected: Shows error for email field
+Actual: Shows "must be a well-formed email address" ✓
+
+Type: Negative test
+
+
+TC_003: Unavailable date selection
+-----------------------------------
+Steps:
+1. Open booking form for Double room
+2. Try to click on "Unavailable" date (02 February shown as unavailable)
+
+Expected: Date should not be clickable OR show error message
+Actual: APPLICATION CRASHES - shows "Application error: a client-side exception has occurred"
+
+// This is a critical bug - see bug-report.txt
+// The whole app breaks, user has to refresh page
+
+Type: Negative test / Bug found
+
+
+ADDITIONAL TESTS
+================
+
+TC_004: Empty email
+-------------------
+Leave email empty, fill other fields → Shows "must not be empty" ✓
+
+TC_005: Empty firstname
+-----------------------
+Leave firstname empty → Shows two errors:
+- "Firstname should not be blank"
+- "size must be between 3 and 18" ✓
+
+TC_006: Empty phone
+-------------------
+Leave phone empty → Shows:
+- "must not be empty"
+- "size must be between 11 and 21" ✓
+
+TC_007: All fields empty
+------------------------
+Submit with all fields empty → Shows multiple validation errors for all fields ✓
+
+
+NOTES
+=====
+- Email must contain @
+- Firstname: 3-18 chars
+- Lastname: 3-30 chars  
+- Phone: 11-21 chars
+- Found 1 critical bug: app crashes on unavailable date click (see bug report)

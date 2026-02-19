@@ -1,0 +1,71 @@
+BUG REPORT
+==========
+
+Title: Application crashes when clicking unavailable booking date
+
+Severity: CRITICAL
+Priority: HIGH
+Status: NEW
+
+Found by: Manual testing during test assignment
+Date: [today's date]
+
+
+ENVIRONMENT
+-----------
+URL: https://automationintesting.online/
+Browser: Chrome [your version]
+OS: [your OS]
+
+
+STEPS TO REPRODUCE
+------------------
+1. Go to https://automationintesting.online/
+2. Click "Book now" on any room (tested with Double room)
+3. Look at the calendar
+4. Click on any date that shows "Unavailable" (example: 02 February 2026)
+
+
+EXPECTED BEHAVIOR
+-----------------
+One of these should happen:
+- Date is not clickable (disabled state)
+- Shows error message like "This date is unavailable"
+- Nothing happens when clicked
+- Shows alternative available dates
+
+App should NOT crash.
+
+
+ACTUAL BEHAVIOR
+---------------
+- Entire application crashes
+- Page shows error: "Application error: a client-side exception has occurred (see the browser console for more information)"
+- Booking form becomes completely unusable
+- User must refresh the entire page to recover
+
+
+IMPACT
+------
+HIGH - Users cannot complete bookings after hitting this error
+
+Business Impact:
+- Lost bookings (users may leave site)
+- Poor user experience
+- Users may think site is broken
+
+
+ADDITIONAL INFO
+---------------
+This happens consistently - reproduced 3 times in testing.
+The unavailable dates are visible in calendar with blue "Unavailable" label.
+
+Screenshot: [attach if possible]
+
+
+SUGGESTED FIX
+-------------
+Add validation to prevent clicking unavailable dates:
+- Make unavailable dates non-clickable (CSS: pointer-events: none)
+- Add error handling to catch date selection errors
+- Show user-friendly message if somehow selected
