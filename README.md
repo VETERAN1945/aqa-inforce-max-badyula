@@ -268,6 +268,4 @@ Sample output:
 - Proper waits and error handling implemented throughout
 - Professional documentation of issues found
 
-## 🙏 Acknowledgments
-
-Testing performed on the Restful Booker Platform demo site provided for automation practice and interview assessments.
+## 🙏 
