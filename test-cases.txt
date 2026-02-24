@@ -2,85 +2,184 @@ MANUAL TEST CASES - Room Booking
 =================================
 
 Test Environment: https://automationintesting.online/
-Tested on: Chrome, February 2026
+Browser: Chrome
 
 
 TC_001: Book room with valid data
 ----------------------------------
+Type: Positive
+
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
+
 Steps:
-1. Open https://automationintesting.online/
-2. Click "Book now" on Double room
-3. Select dates: 18-19 February 2026
-4. Fill in form:
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Fill in form:
    - Firstname: John
    - Lastname: Smith
    - Email: john.smith@test.com
-   - Phone: +380501234567
-5. Click "Reserve Now"
+   - Phone: 38050123456789
+4. Click "Reserve Now"
 
-Expected: Booking confirmed, shows dates 2026-02-18 to 2026-02-19
-Actual: Works as expected ✓
-
-Type: Positive test
+Expected:
+- Booking confirmation is displayed
+- Selected dates are shown in confirmation
 
 
 TC_002: Invalid email format
 -----------------------------
+Type: Negative
+
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
+
 Steps:
-1. Open booking form for Double room
-2. Select dates: 18-19 February 2026
-3. Fill in form but use invalid email: john.smithtest.com (no @ symbol)
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Fill in form:
+   - Firstname: John
+   - Lastname: Smith
+   - Email: john.smithtest.com (no @ symbol)
+   - Phone: 38050123456789
 4. Click "Reserve Now"
 
-Expected: Shows error for email field
-Actual: Shows "must be a well-formed email address" ✓
+Expected:
+- Booking is NOT submitted
+- Error message appears: "must be a well-formed email address"
 
-Type: Negative test
 
+TC_003: Unavailable date selection causes crash
+------------------------------------------------
+Type: Negative / Bug Report
 
-TC_003: Unavailable date selection
------------------------------------
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room was already booked in this session,
+  making at least one date shown as "Unavailable"
+
 Steps:
-1. Open booking form for Double room
-2. Try to click on "Unavailable" date (02 February shown as unavailable)
+1. Click "Book now" on Double Room
+2. Click on any date marked as "Unavailable"
 
-Expected: Date should not be clickable OR show error message
-Actual: APPLICATION CRASHES - shows "Application error: a client-side exception has occurred"
+Expected:
+- Date should not be selectable
+- OR system shows error: "This date is unavailable"
 
-// This is a critical bug - see bug-report.txt
-// The whole app breaks, user has to refresh page
+Actual:
+- APPLICATION CRASHES
+- Shows: "Application error: a client-side exception has occurred"
+- User must refresh page to continue
 
-Type: Negative test / Bug found
+Status: CRITICAL BUG
 
 
-ADDITIONAL TESTS
-================
+TC_004: Empty email field validation
+--------------------------------------
+Type: Negative
 
-TC_004: Empty email
--------------------
-Leave email empty, fill other fields → Shows "must not be empty" ✓
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
 
-TC_005: Empty firstname
------------------------
-Leave firstname empty → Shows two errors:
-- "Firstname should not be blank"
-- "size must be between 3 and 18" ✓
+Steps:
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Fill in form:
+   - Firstname: John
+   - Lastname: Smith
+   - Email: (leave empty)
+   - Phone: 38050123456789
+4. Click "Reserve Now"
 
-TC_006: Empty phone
--------------------
-Leave phone empty → Shows:
-- "must not be empty"
-- "size must be between 11 and 21" ✓
+Expected:
+- Booking is NOT submitted
+- Error message appears: "must not be empty"
 
-TC_007: All fields empty
-------------------------
-Submit with all fields empty → Shows multiple validation errors for all fields ✓
+
+TC_005: Empty firstname field validation
+-----------------------------------------
+Type: Negative
+
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
+
+Steps:
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Fill in form:
+   - Firstname: (leave empty)
+   - Lastname: Smith
+   - Email: john.smith@test.com
+   - Phone: 38050123456789
+4. Click "Reserve Now"
+
+Expected:
+- Booking is NOT submitted
+- Error messages appear:
+  "Firstname should not be blank"
+  "size must be between 3 and 18"
+
+
+TC_006: Empty phone field validation
+--------------------------------------
+Type: Negative
+
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
+
+Steps:
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Fill in form:
+   - Firstname: John
+   - Lastname: Smith
+   - Email: john.smith@test.com
+   - Phone: (leave empty)
+4. Click "Reserve Now"
+
+Expected:
+- Booking is NOT submitted
+- Error messages appear:
+  "must not be empty"
+  "size must be between 11 and 21"
+
+
+TC_007: All fields empty validation
+-------------------------------------
+Type: Negative
+
+Precondition:
+- User is on https://automationintesting.online/
+- Double Room has at least 2 consecutive available days within the next 2 weeks
+
+Steps:
+1. Click "Book now" on Double Room
+2. Select any 2 consecutive available dates
+3. Leave ALL fields empty:
+   - Firstname: (empty)
+   - Lastname: (empty)
+   - Email: (empty)
+   - Phone: (empty)
+4. Click "Reserve Now"
+
+Expected:
+- Booking is NOT submitted
+- Multiple validation errors appear for all empty fields:
+  "Firstname should not be blank"
+  "Lastname should not be blank"
+  "must be a well-formed email address"
+  "must not be empty"
 
 
 NOTES
 =====
 - Email must contain @
 - Firstname: 3-18 chars
-- Lastname: 3-30 chars  
+- Lastname: 3-30 chars
 - Phone: 11-21 chars
-- Found 1 critical bug: app crashes on unavailable date click (see bug report)
+- Found 1 critical bug: app crashes on unavailable date click (see bug-report.txt)

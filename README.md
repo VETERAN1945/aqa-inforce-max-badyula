@@ -13,6 +13,8 @@ This project contains comprehensive testing for the Restful Booker Platform (htt
 ## 🏗️ Project Structure
 ```
 aqa-inforce-max-badyula/
+├── fixtures/               # Centralized test data
+│   └── userData.js         # User and booking data for reuse
 ├── test-cases.txt          # Manual test cases (7 scenarios)
 ├── bug-report.txt          # Critical bug documentation
 ├── pages/                  # Page Object Model
@@ -111,7 +113,7 @@ Three automated scenarios testing the booking flow:
 1. **TC_001: Book room with valid data**
    - Opens Double room booking page
    - Selects available dates
-   - Fills form with valid data
+   - Fills form with valid data (from fixtures/userData.js)
    - Submits booking
    - Verifies success or documents crash (known bug)
 
@@ -121,10 +123,10 @@ Three automated scenarios testing the booking flow:
    - Enters invalid email (missing @ symbol)
    - Verifies validation error message appears
 
-3. **TC_003: Calendar loads on booking page**
-   - Opens booking page
-   - Verifies calendar component is visible
-   - Confirms booking interface is accessible
+3. **TC_003: Unavailable date selection causes crash**
+   - Creates a booking to make dates unavailable
+   - Attempts to click on "Unavailable" date
+   - Verifies application crash (critical bug confirmed)
 
 #### API Tests (`tests/api/rooms.spec.js`)
 
@@ -139,7 +141,7 @@ Four API scenarios testing room management:
    - Validates room properties
 
 3. **API_TC_003: Create booking**
-   - Creates new booking via API
+   - Creates new booking via API using data from fixtures/userData.js
    - Verifies booking ID is returned
 
 4. **API_TC_004: Get room by ID**
@@ -223,7 +225,7 @@ Four API scenarios testing room management:
 
 **Target Application:**
 - Base URL: https://automationintesting.online/
-- API Base URL: https://automationintesting.online/api
+- API Base URL: https://automationintesting.online/api (managed via playwright.config.js)
 - Admin Panel: https://automationintesting.online/#/admin
 - Credentials: admin / password
 
@@ -245,7 +247,7 @@ Sample output:
 ```
 ✓ TC_001 PASSED: Booking successful
 ✓ TC_002 PASSED: Validation error shown
-✓ TC_003 PASSED: Calendar visible
+✓ TC_003 PASSED: Unavailable date crash confirmed (known bug)
 
 ✓ API_TC_001: Found 3 rooms
 ✓ API_TC_002: Room 1 - Single
@@ -265,9 +267,7 @@ Sample output:
 - Bug discovery during manual testing demonstrates exploratory testing skills
 - Tests include both positive and negative scenarios
 - Code follows Page Object Model pattern for maintainability
-- Proper waits and error handling implemented throughout
+- Test data centralized in fixtures/userData.js for easy maintenance
+- BASE_URL managed via playwright.config.js — not hardcoded in tests
+- Proper waits using waitFor() instead of fixed timeouts
 - Professional documentation of issues found
-
-## 🙏 Acknowledgments
-
-Testing performed on the Restful Booker Platform demo site provided for automation practice and interview assessments.

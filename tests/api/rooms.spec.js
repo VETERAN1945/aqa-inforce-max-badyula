@@ -1,65 +1,56 @@
-const { test, expect } = require('@playwright/test');
+// tests/api/rooms.spec.js
 
-const BASE_URL = 'https://automationintesting.online/api';
+const { test, expect } = require('@playwright/test');
+const { validBooking } = require('../../fixtures/userData');
 
 test.describe('Room Management - API Tests', () => {
+
+  // API_TC_001: Get all rooms
   test('API_TC_001: Get all rooms', async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/room/`);
-    
+    // baseURL из playwright.config.js — просто пишем путь
+    const response = await request.get('/api/room/');
+
     expect(response.ok()).toBeTruthy();
     const data = await response.json();
-    
+
     expect(data.rooms).toBeDefined();
     expect(Array.isArray(data.rooms)).toBeTruthy();
-    
-    console.log(`✓ API_TC_001: Found ${data.rooms.length} rooms`);
+    expect(data.rooms.length).toBeGreaterThan(0);
   });
 
-  test('API_TC_002: Get specific room', async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/room/1`);
-    
+  // API_TC_002: Get specific room by ID
+  test('API_TC_002: Get specific room by ID', async ({ request }) => {
+    const response = await request.get('/api/room/1');
+
     expect(response.ok()).toBeTruthy();
     const room = await response.json();
-    
+
     expect(room.roomid).toBe(1);
-    
-    console.log(`✓ API_TC_002: Room ${room.roomid} - ${room.type}`);
+    expect(room.type).toBeDefined();
   });
 
+  // API_TC_003: Create booking
   test('API_TC_003: Create booking', async ({ request }) => {
-    const bookingData = {
-      roomid: 1,
-      firstname: 'John',
-      lastname: 'Smith',
-      depositpaid: true,
-      email: 'john.smith@test.com',
-      phone: '+380501234567',
-      bookingdates: {
-        checkin: '2026-03-01',
-        checkout: '2026-03-02'
-      }
-    };
-
-    const response = await request.post(`${BASE_URL}/booking/`, {
-      data: bookingData
+    // данные из fixtures — не хардкодим прямо в тесте
+    const response = await request.post('/api/booking/', {
+      data: validBooking
     });
 
     expect(response.ok()).toBeTruthy();
     const booking = await response.json();
-    
+
     expect(booking.bookingid).toBeDefined();
-    
-    console.log(`✓ API_TC_003: Booking ${booking.bookingid} created`);
+    expect(booking.booking.firstname).toBe(validBooking.firstname);
   });
 
-  test('API_TC_004: Get room by ID', async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/room/2`);
-    
+  // API_TC_004: Get room by ID = 2
+  test('API_TC_004: Get room by ID 2', async ({ request }) => {
+    const response = await request.get('/api/room/2');
+
     expect(response.ok()).toBeTruthy();
     const room = await response.json();
-    
+
     expect(room.type).toBeDefined();
-    
-    console.log(`✓ API_TC_004: Room type is ${room.type}`);
+    expect(room.roomid).toBe(2);
   });
 });

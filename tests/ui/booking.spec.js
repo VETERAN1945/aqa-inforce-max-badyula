@@ -1,5 +1,8 @@
+// tests/ui/booking.spec.js
+
 const { test, expect } = require('@playwright/test');
 const { BookingPage } = require('../../pages/BookingPage');
+const { validUser, invalidEmailUser } = require('../../fixtures/userData');
 
 test.describe('Room Booking - UI Tests', () => {
   let bookingPage;
@@ -9,45 +12,73 @@ test.describe('Room Booking - UI Tests', () => {
     await bookingPage.goto();
   });
 
+  // TC_001: Book room with valid data
   test('TC_001: Book room with valid data', async ({ page }) => {
     await bookingPage.openDoubleRoomBooking();
     await bookingPage.selectDatesAndOpenForm();
-    await bookingPage.fillBookingForm('John', 'Smith', 'john.smith@test.com', '+380501234567');
+    await bookingPage.fillBookingForm(
+      validUser.firstname,
+      validUser.lastname,
+      validUser.email,
+      validUser.phone
+    );
     await bookingPage.submitBooking();
-    
-    // Check for success OR application error (known bug)
+
     const returnHome = page.getByRole('link', { name: 'Return home' });
     const appError = page.getByText('Application error');
-    
+
     try {
       await expect(returnHome).toBeVisible({ timeout: 5000 });
-      console.log('✓ TC_001 PASSED: Booking successful');
-    } catch (error) {
-      // Check if app crashed (known bug)
+    } catch {
+      // Известный баг — приложение может крашиться
       const hasError = await appError.isVisible().catch(() => false);
       if (hasError) {
-        console.log('⚠ TC_001: Application crashed (known bug documented in bug-report.txt)');
-        expect(hasError).toBeTruthy(); // Test passes, bug confirmed
+        expect(hasError).toBeTruthy(); // баг подтверждён, тест засчитывается
       } else {
-        throw error; // Real failure
+        throw new Error('TC_001: Unexpected failure');
       }
     }
   });
 
+  // TC_002: Invalid email format
   test('TC_002: Invalid email shows error', async ({ page }) => {
     await bookingPage.openDoubleRoomBooking();
     await bookingPage.selectDatesAndOpenForm();
-    await bookingPage.fillBookingForm('John', 'Smith', 'john.smithtest.com', '+380501234567');
+    await bookingPage.fillBookingForm(
+      invalidEmailUser.firstname,
+      invalidEmailUser.lastname,
+      invalidEmailUser.email,
+      invalidEmailUser.phone
+    );
     await bookingPage.submitBooking();
-    
+
     await expect(bookingPage.errorAlert).toBeVisible({ timeout: 5000 });
-    console.log('✓ TC_002 PASSED: Validation error shown');
   });
 
-  test('TC_003: Calendar loads on booking page', async ({ page }) => {
+  // TC_003: Unavailable date selection (соответствует test-cases.txt)
+  test('TC_003: Unavailable date selection causes crash', async ({ page }) => {
+    // Precondition: сначала делаем бронирование чтобы появились Unavailable даты
     await bookingPage.openDoubleRoomBooking();
-    
-    await expect(bookingPage.calendar).toBeVisible();
-    console.log('✓ TC_003 PASSED: Calendar visible');
+    await bookingPage.selectDatesAndOpenForm();
+    await bookingPage.fillBookingForm(
+      validUser.firstname,
+      validUser.lastname,
+      validUser.email,
+      validUser.phone
+    );
+    await bookingPage.submitBooking();
+
+    // Возвращаемся и пробуем кликнуть на Unavailable дату
+    await bookingPage.goto();
+    await bookingPage.openDoubleRoomBooking();
+
+    const unavailableDate = page.getByText('Unavailable').first();
+    await unavailableDate.waitFor({ state: 'visible', timeout: 10000 });
+    await unavailableDate.click();
+
+    // Expected: crash или ошибка — оба результата фиксируем
+    const appError = page.getByText('Application error');
+    const hasError = await appError.isVisible().catch(() => false);
+    expect(hasError).toBeTruthy(); // критический баг подтверждён
   });
 });

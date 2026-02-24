@@ -12,7 +12,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'https://automationintesting.online',
+    baseURL: 'https://automationintesting.online', // единое место для URL
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
