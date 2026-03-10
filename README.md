@@ -1,6 +1,6 @@
 # Test Automation Project - Restful Booker Platform
 
-Test automation assignment for Gamicorp using Playwright framework.
+Test automation project using Playwright framework covering room booking and contact form functionality.
 
 ## 📋 Project Overview
 
@@ -8,22 +8,29 @@ This project contains comprehensive testing for the Restful Booker Platform (htt
 - **Manual test cases** documenting room booking functionality
 - **UI automation tests** using Playwright and Page Object Model
 - **API automation tests** for room management operations
+- **Contact form tests** covering positive and negative scenarios
 - **Bug report** documenting critical issues found during testing
+- **CI/CD pipeline** via GitHub Actions
 
 ## 🏗️ Project Structure
 ```
 aqa-inforce-max-badyula/
+├── .github/
+│   └── workflows/
+│       └── tests.yml       # GitHub Actions CI/CD pipeline
 ├── fixtures/               # Centralized test data
-│   └── userData.js         # User and booking data for reuse
-├── test-cases.txt          # Manual test cases (7 scenarios)
-├── bug-report.txt          # Critical bug documentation
+│   └── userData.js         # User, booking and contact data for reuse
 ├── pages/                  # Page Object Model
-│   └── BookingPage.js      # Booking page interactions and locators
+│   ├── BookingPage.js      # Booking page interactions and locators
+│   └── ContactPage.js      # Contact form interactions and locators
 ├── tests/
 │   ├── ui/                 # UI automation tests
-│   │   └── booking.spec.js # 3 UI test scenarios
+│   │   ├── booking.spec.js # 3 UI booking test scenarios
+│   │   └── contact.spec.js # 3 UI contact form test scenarios
 │   └── api/                # API automation tests
 │       └── rooms.spec.js   # 4 API test scenarios
+├── test-cases.txt          # Manual test cases (7 scenarios)
+├── bug-report.txt          # Critical bug documentation
 ├── package.json
 ├── playwright.config.js
 └── README.md
@@ -37,19 +44,18 @@ aqa-inforce-max-badyula/
 
 ### Installation
 
-1. Clone or download this repository
-
-2. Navigate to project directory:
+1. Clone the repository:
 ```bash
+git clone https://github.com/VETERAN1945/aqa-inforce-max-badyula.git
 cd aqa-inforce-max-badyula
 ```
 
-3. Install dependencies:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-4. Install Playwright browsers:
+3. Install Playwright browsers:
 ```bash
 npx playwright install
 ```
@@ -61,14 +67,19 @@ npx playwright install
 npm test
 ```
 
-### Run UI tests only:
+### Run booking UI tests only:
 ```bash
-npx playwright test ui
+npx playwright test tests/ui/booking.spec.js
+```
+
+### Run contact form tests only:
+```bash
+npx playwright test tests/ui/contact.spec.js
 ```
 
 ### Run API tests only:
 ```bash
-npx playwright test api
+npx playwright test tests/api/rooms.spec.js
 ```
 
 ### Run tests in headed mode (see browser):
@@ -101,180 +112,104 @@ Contains 7 comprehensive test cases:
 - ✅ TC_006: Empty phone validation
 - ✅ TC_007: All fields empty validation
 
-**Critical Bug Found:** 
-Application crashes when user clicks on unavailable dates. Full details in `bug-report.txt`.
-
 ### Part 2: Automation
 
-#### UI Tests (`tests/ui/booking.spec.js`)
-
-Three automated scenarios testing the booking flow:
+#### Booking UI Tests (`tests/ui/booking.spec.js`)
 
 1. **TC_001: Book room with valid data**
    - Opens Double room booking page
-   - Selects available dates
-   - Fills form with valid data (from fixtures/userData.js)
-   - Submits booking
-   - Verifies success or documents crash (known bug)
+   - Fills form with valid data from fixtures/userData.js
+   - Submits booking and verifies success
 
 2. **TC_002: Invalid email shows error**
-   - Opens booking page
-   - Selects dates
    - Enters invalid email (missing @ symbol)
    - Verifies validation error message appears
 
-3. **TC_003: Unavailable date selection causes crash**
-   - Creates a booking to make dates unavailable
-   - Attempts to click on "Unavailable" date
-   - Verifies application crash (critical bug confirmed)
+3. **TC_003: Unavailable date selection**
+   - Attempts to click on unavailable date
+   - Verifies application handles it gracefully (bug was fixed)
+
+#### Contact Form UI Tests (`tests/ui/contact.spec.js`)
+
+1. **TC_001: Successful message submission with valid data**
+   - Fills all contact form fields with valid data
+   - Submits form and verifies success message
+
+2. **TC_005: Cannot submit with invalid email format**
+   - Enters email without @ symbol
+   - Verifies error message appears
+
+3. **TC_006: Cannot submit with phone exceeding maximum length**
+   - Enters phone number longer than 21 characters
+   - Verifies validation error message
 
 #### API Tests (`tests/api/rooms.spec.js`)
 
-Four API scenarios testing room management:
+1. **API_TC_001: Get all rooms** — Retrieves list of all available rooms
+2. **API_TC_002: Get specific room** — Fetches details for room ID 1
+3. **API_TC_003: Create booking** — Creates new booking via API
+4. **API_TC_004: Get room by ID 2** — Retrieves room details by ID
 
-1. **API_TC_001: Get all rooms**
-   - Retrieves list of all available rooms
-   - Verifies response structure
+## 🤖 CI/CD Pipeline
 
-2. **API_TC_002: Get specific room**
-   - Fetches details for room ID 1
-   - Validates room properties
+This project uses **GitHub Actions** for automated test execution.
 
-3. **API_TC_003: Create booking**
-   - Creates new booking via API using data from fixtures/userData.js
-   - Verifies booking ID is returned
+Tests run automatically on every `git push` to the `main` branch:
 
-4. **API_TC_004: Get room by ID**
-   - Retrieves room details by specific ID
-   - Validates room type and properties
+```
+Push code → GitHub creates virtual Linux server
+         → Installs Node.js and dependencies
+         → Installs Chromium browser
+         → Runs all 10 tests
+         → Saves HTML report as artifact
+```
+
+**Results:** 10/10 tests passing in CI ✅
 
 ## 🐛 Known Issues & Bugs
 
 ### Critical Bug (Documented in bug-report.txt)
 
-**Issue:** Application crashes when clicking unavailable booking dates
+**Issue:** Application crashed when clicking unavailable booking dates
 
-**Severity:** CRITICAL  
-**Priority:** HIGH
+**Severity:** CRITICAL | **Priority:** HIGH | **Status:** Fixed by developers
 
 **Steps to Reproduce:**
 1. Navigate to room booking page
 2. Click on a date marked as "Unavailable"
-3. Application displays error: "Application error: a client-side exception has occurred"
+3. Application displayed error: "Application error: a client-side exception has occurred"
 
-**Expected Behavior:**
-- Date should not be clickable, OR
-- System should display user-friendly error message, OR
-- Calendar should prevent selection
+## ⚠️ Known Limitations
 
-**Actual Behavior:**
-- Entire application crashes
-- Page refresh required to continue
-
-**Impact:**
-- Complete loss of user session
-- Poor user experience
-- Potential booking abandonment
-
-## ⚠️ Known Limitations & Considerations
-
-### Test Environment Limitations
-
-1. **Live Site Testing**
-   - Tests run against live production site (https://automationintesting.online/)
-   - Real bookings are created during test execution
-   - No sandbox/test environment available
-
-2. **Room Availability**
-   - Rooms can become fully booked after test execution
-   - Tests may fail on subsequent runs if rooms are occupied
-   - **Workaround:** Delete bookings via Admin panel or wait for automatic cleanup
+1. **Live Site Testing** — Tests run against live production site, real bookings are created
+2. **Room Availability** — Rooms can become fully booked after test execution
+3. **No Cleanup Mechanism** — Test data persists after execution, manual cleanup via Admin panel may be needed
    - Admin access: https://automationintesting.online/#/admin (admin/password)
-
-3. **No Cleanup Mechanism**
-   - Assignment requirements did not specify teardown/cleanup
-   - Test data persists after execution
-   - Manual cleanup via Admin panel may be needed
-
-4. **Date Selection Behavior**
-   - Application auto-selects nearest available dates
-   - Tests interact with pre-selected dates rather than choosing specific dates
-   - This is application behavior, not test limitation
-
-5. **Application Stability**
-   - Application has known crash bugs (documented)
-   - Tests include error handling for application crashes
-   - Some test scenarios verify both success and crash scenarios
-
-### Recommendations for Future Runs
-
-- Check room availability before running UI tests
-- Use Admin panel to clear old bookings if needed
-- Consider using different room types (Single/Double/Suite) to avoid conflicts
-- Tests are designed to be resilient to application bugs
 
 ## 🔧 Technologies Used
 
-- **Playwright ^1.40.0** - End-to-end testing framework
-- **JavaScript** - Programming language
-- **Node.js** - Runtime environment
-- **Page Object Model** - Design pattern for maintainable test code
-- **Playwright Test Runner** - Built-in test runner with reporting
+- **Playwright ^1.40.0** — End-to-end testing framework
+- **JavaScript** — Programming language
+- **Node.js** — Runtime environment
+- **Page Object Model** — Design pattern for maintainable test code
+- **GitHub Actions** — CI/CD pipeline for automated test execution
 
-## 📊 Test Execution Details
+## 📊 Test Results
 
-**Target Application:**
-- Base URL: https://automationintesting.online/
-- API Base URL: https://automationintesting.online/api (managed via playwright.config.js)
-- Admin Panel: https://automationintesting.online/#/admin
-- Credentials: admin / password
-
-**Test Configuration:**
-- Browser: Chromium (headless by default)
-- Timeout: 30 seconds per test
-- Screenshots: Captured on failure
-- Traces: Recorded on first retry
-- Reports: HTML format
-
-## 📈 Test Results
-
-All tests are independent and can run in any order. Expected results:
-
-**UI Tests:** 3/3 passing (with proper room availability)
-**API Tests:** 4/4 passing
-
-Sample output:
-```
-✓ TC_001 PASSED: Booking successful
-✓ TC_002 PASSED: Validation error shown
-✓ TC_003 PASSED: Unavailable date crash confirmed (known bug)
-
-✓ API_TC_001: Found 3 rooms
-✓ API_TC_002: Room 1 - Single
-✓ API_TC_003: Booking 34 created
-✓ API_TC_004: Room type is Double
-```
+**UI Booking Tests:** 3/3 passing  
+**UI Contact Form Tests:** 3/3 passing  
+**API Tests:** 4/4 passing  
+**Total: 10/10 ✅**
 
 ## 👤 Author
 
 **Max Badyula**
 - GitHub: [github.com/VETERAN1945](https://github.com/VETERAN1945)
-- Assignment: Gamicorp QA Engineer Position
-- Completion Date: February 2026
 
 ## 📌 Additional Notes
 
-- Bug discovery during manual testing demonstrates exploratory testing skills
-- Tests include both positive and negative scenarios
-- Code follows Page Object Model pattern for maintainability
-<<<<<<< HEAD
 - Test data centralized in fixtures/userData.js for easy maintenance
 - BASE_URL managed via playwright.config.js — not hardcoded in tests
-- Proper waits using waitFor() instead of fixed timeouts
-- Professional documentation of issues found
-=======
-- Proper waits and error handling implemented throughout
-- Professional documentation of issues found
-
-## 🙏 
->>>>>>> efcded26eb559066d9c014d6a010b226b2d29f75
+- Proper waits using waitFor() instead of hardcoded timeouts
+- Bug discovery during manual testing demonstrates exploratory testing skills
+- Tests include both positive and negative scenarios
