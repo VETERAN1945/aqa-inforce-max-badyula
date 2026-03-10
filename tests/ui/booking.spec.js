@@ -30,10 +30,9 @@ test.describe('Room Booking - UI Tests', () => {
     try {
       await expect(returnHome).toBeVisible({ timeout: 5000 });
     } catch {
-      // Известный баг — приложение может крашиться
       const hasError = await appError.isVisible().catch(() => false);
       if (hasError) {
-        expect(hasError).toBeTruthy(); // баг подтверждён, тест засчитывается
+        expect(hasError).toBeTruthy();
       } else {
         throw new Error('TC_001: Unexpected failure');
       }
@@ -55,9 +54,9 @@ test.describe('Room Booking - UI Tests', () => {
     await expect(bookingPage.errorAlert).toBeVisible({ timeout: 5000 });
   });
 
-  // TC_003: Unavailable date selection (соответствует test-cases.txt)
-  test('TC_003: Unavailable date selection causes crash', async ({ page }) => {
-    // Precondition: сначала делаем бронирование чтобы появились Unavailable даты
+  // TC_003: Unavailable date selection
+  // Баг був виправлений — додаток більше не крашиться
+  test('TC_003: Unavailable date selection', async ({ page }) => {
     await bookingPage.openDoubleRoomBooking();
     await bookingPage.selectDatesAndOpenForm();
     await bookingPage.fillBookingForm(
@@ -68,7 +67,6 @@ test.describe('Room Booking - UI Tests', () => {
     );
     await bookingPage.submitBooking();
 
-    // Возвращаемся и пробуем кликнуть на Unavailable дату
     await bookingPage.goto();
     await bookingPage.openDoubleRoomBooking();
 
@@ -76,9 +74,9 @@ test.describe('Room Booking - UI Tests', () => {
     await unavailableDate.waitFor({ state: 'visible', timeout: 10000 });
     await unavailableDate.click();
 
-    // Expected: crash или ошибка — оба результата фиксируем
+    // Баг исправлен — краша больше нет
     const appError = page.getByText('Application error');
     const hasError = await appError.isVisible().catch(() => false);
-    expect(hasError).toBeTruthy(); // критический баг подтверждён
+    expect(hasError).toBeFalsy();
   });
 });

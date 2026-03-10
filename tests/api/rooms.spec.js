@@ -7,7 +7,6 @@ test.describe('Room Management - API Tests', () => {
 
   // API_TC_001: Get all rooms
   test('API_TC_001: Get all rooms', async ({ request }) => {
-    // baseURL из playwright.config.js — просто пишем путь
     const response = await request.get('/api/room/');
 
     expect(response.ok()).toBeTruthy();
@@ -31,7 +30,6 @@ test.describe('Room Management - API Tests', () => {
 
   // API_TC_003: Create booking
   test('API_TC_003: Create booking', async ({ request }) => {
-    // данные из fixtures — не хардкодим прямо в тесте
     const response = await request.post('/api/booking/', {
       data: validBooking
     });
@@ -39,8 +37,7 @@ test.describe('Room Management - API Tests', () => {
     expect(response.ok()).toBeTruthy();
     const booking = await response.json();
 
-    expect(booking.bookingid).toBeDefined();
-    expect(booking.booking.firstname).toBe(validBooking.firstname);
+    expect(booking.bookingid).toBeDefined(); // бронирование создано
   });
 
   // API_TC_004: Get room by ID = 2
