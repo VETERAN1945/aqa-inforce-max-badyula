@@ -5,9 +5,11 @@
   "scripts": {
     "test": "npx playwright test",
     "test:ui": "npx playwright test tests/ui/booking.spec.js",
+    "test:contact": "npx playwright test tests/ui/contact.spec.js",
     "test:api": "npx playwright test tests/api/rooms.spec.js",
     "test:headed": "npx playwright test --headed",
-    "report": "npx playwright show-report"
+    "report": "npx playwright show-report",
+    "playwright:install": "npx playwright install chromium"
   },
   "keywords": ["playwright", "testing", "automation"],
   "author": "Max Badyula",

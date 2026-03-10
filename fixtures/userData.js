@@ -28,4 +28,20 @@ const validBooking = {
   }
 };
 
-module.exports = { validUser, invalidEmailUser, validBooking };
+const validContact = {
+  name: 'John',
+  email: 'john@gmail.com',
+  phone: '380501234567',
+  subject: 'Double Room',
+  message: 'I would like to know more about room availability'
+};
+
+const invalidEmailContact = {
+  name: 'John',
+  email: 'johngmail.com', // no @ symbol
+  phone: '380501234567',
+  subject: 'Double Room',
+  message: 'Test message'
+};
+
+module.exports = { validUser, invalidEmailUser, validBooking, validContact, invalidEmailContact };

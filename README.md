@@ -267,7 +267,14 @@ Sample output:
 - Bug discovery during manual testing demonstrates exploratory testing skills
 - Tests include both positive and negative scenarios
 - Code follows Page Object Model pattern for maintainability
+<<<<<<< HEAD
 - Test data centralized in fixtures/userData.js for easy maintenance
 - BASE_URL managed via playwright.config.js — not hardcoded in tests
 - Proper waits using waitFor() instead of fixed timeouts
 - Professional documentation of issues found
+=======
+- Proper waits and error handling implemented throughout
+- Professional documentation of issues found
+
+## 🙏 
+>>>>>>> efcded26eb559066d9c014d6a010b226b2d29f75
