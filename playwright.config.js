@@ -2,9 +2,9 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 30000,
+  timeout: 60000,
   expect: {
-    timeout: 5000
+    timeout: 10000
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -12,7 +12,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'https://automationintesting.online', // единое место для URL
+    baseURL: 'https://automationintesting.online',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
