@@ -11,10 +11,15 @@
     "report": "npx playwright show-report",
     "playwright:install": "npx playwright install chromium"
   },
-  "keywords": ["playwright", "testing", "automation"],
+  "keywords": [
+    "playwright",
+    "testing",
+    "automation"
+  ],
   "author": "Max Badyula",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.40.0",
+    "allure-playwright": "^3.6.0"
   }
 }
